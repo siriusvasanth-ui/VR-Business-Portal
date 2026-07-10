@@ -1,0 +1,49 @@
+# Render Blueprint — deploys the VR Business Portal as two services.
+# See docs/RENDER_DEPLOYMENT.md for step-by-step instructions and for the
+# alternative single-service (backend serves the built frontend) approach.
+
+services:
+  # ---- Backend API (Node/Express) ----
+  - type: web
+    name: vr-business-portal-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node app.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: REPOSITORY_TYPE
+        value: json
+      - key: CORS_ORIGIN
+        # Set this to your frontend URL after the static site is created.
+        value: "*"
+
+  # ---- Frontend (React/Vite static site) ----
+  - type: web
+    name: vr-business-portal-web
+    runtime: static
+    rootDir: frontend
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    autoDeploy: true
+    envVars:
+      - key: VITE_API_BASE_URL
+        # Set this to the backend service URL, e.g.
+        # https://vr-business-portal-api.onrender.com
+        value: ""
+    routes:
+      # SPA fallback so client-side routes resolve to index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html

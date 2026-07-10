@@ -1,0 +1,37 @@
+[
+  {
+    "id": "WS-ENT100",
+    "name": "Web Standard Account",
+    "description": "Baseline non-privileged access granted to every active account",
+    "created": "2026-07-02T00:00:00Z",
+    "displayName": "Web Standard Account"
+  },
+  {
+    "id": "WS-ENT200",
+    "name": "Web Elevated Account",
+    "description": "Extended non-authoritative access for power users",
+    "created": "2026-07-02T00:00:00Z",
+    "displayName": "Web Elevated Account"
+  },
+  {
+    "id": "WS-ENT300",
+    "name": "Web Administrator",
+    "description": "Full administrative access to the VR Business Portal",
+    "created": "2026-07-02T00:00:00Z",
+    "displayName": "Web Administrator"
+  },
+  {
+    "id": "WS-ENT400",
+    "name": "HR Portal Access",
+    "description": "Access to the Human Resources portal and employee records",
+    "created": "2026-07-02T00:00:00Z",
+    "displayName": "HR Portal Access"
+  },
+  {
+    "id": "WS-ENT500",
+    "name": "Finance Portal Access",
+    "description": "Access to the Finance portal, invoices, and reporting",
+    "created": "2026-07-02T00:00:00Z",
+    "displayName": "Finance Portal Access"
+  }
+]

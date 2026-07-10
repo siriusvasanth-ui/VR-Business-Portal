@@ -1,0 +1,36 @@
+{
+  "name": "vr-business-portal-backend",
+  "version": "1.0.0",
+  "description": "VR Business Portal backend — Accounts, Groups (Entitlements) and Group Assignments over a swappable repository layer. Designed for later SailPoint Web Services Connector aggregation.",
+  "main": "app.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "identity",
+    "accounts",
+    "entitlements",
+    "sailpoint",
+    "web-services-connector"
+  ],
+  "author": "VR Business Portal",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
