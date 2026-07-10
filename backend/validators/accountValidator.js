@@ -59,16 +59,19 @@ const updateAccount = [
 const assignGroup = [
   param('id').exists().withMessage('id param is required'),
   body('groups')
-    .optional({ checkFalsy: true })
-    .isString().withMessage('groups must be a string')
-    .trim(),
+    .exists().withMessage('groups is required')
+    .isArray({ min: 1 }).withMessage('groups must be a non-empty array of group ids'),
+  body('groups.*')
+    .isString().withMessage('each group id in groups must be a string')
+    .trim()
+    .notEmpty().withMessage('group id cannot be empty'),
   body('groupId')
     .optional({ checkFalsy: true })
     .isString().withMessage('groupId must be a string')
     .trim(),
   body().custom((value) => {
-    if (!value || (!value.groups && !value.groupId)) {
-      throw new Error('Either groups (string) or groupId is required');
+    if (!value || !Array.isArray(value.groups) || value.groups.length === 0) {
+      throw new Error('groups array is required');
     }
     return true;
   })

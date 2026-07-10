@@ -200,7 +200,10 @@ router.get(
  *             type: object
  *             required: [groups]
  *             properties:
- *               groups: { type: string, example: WS-ENT200 }
+ *               groups:
+ *                 type: array
+ *                 items: { type: string }
+ *                 example: [WS-ENT200, WS-ENT300]
  *     responses:
  *       200: { description: Updated account }
  *       400: { description: Group does not exist }
@@ -211,12 +214,7 @@ router.post(
   validate(assignGroup),
   asyncHandler(async (req, res) => {
     const actor = req.user ? req.user.username : 'system';
-    const source = String(req.body.groups || req.body.groupId || '');
-    const groupIds = source
-      .split(',')
-      .map((g) => g.trim())
-      .filter(Boolean);
-
+    const groupIds = req.body.groups;
     const account = await accountService.assignGroups(req.params.id, groupIds, actor);
     res.json({ success: true, data: account });
   })
