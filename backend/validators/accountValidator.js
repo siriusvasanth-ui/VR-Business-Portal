@@ -58,10 +58,6 @@ const updateAccount = [
 
 const assignGroup = [
   param('id').exists().withMessage('id param is required'),
-  body('accountId')
-    .exists({ checkFalsy: true }).withMessage('accountId is required')
-    .isString().withMessage('accountId must be a string')
-    .trim(),
   body('groups')
     .optional({ checkFalsy: true })
     .isString().withMessage('groups must be a string')

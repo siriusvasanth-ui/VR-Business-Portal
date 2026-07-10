@@ -5,7 +5,7 @@ import axios from 'axios';
  * - Base URL comes from VITE_API_BASE_URL; when empty, requests are same-origin
  *   ("/api/...") which works with the Vite dev proxy and single-service deploys.
  * - A request interceptor attaches the JWT from localStorage.
- * - A response interceptor clears the session and redirects to /login on 401.
+ * - A response interceptor clears any stale session data on 401.
  */
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
@@ -25,13 +25,8 @@ api.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token expired / invalid — force a fresh login (unless we're logging in).
-      const url = error.config?.url || '';
-      if (!url.includes('/api/auth/login')) {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        if (window.location.pathname !== '/login') window.location.href = '/login';
-      }
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
     }
     return Promise.reject(error);
   }

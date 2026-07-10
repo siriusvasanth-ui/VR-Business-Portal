@@ -198,9 +198,8 @@ router.get(
  *         application/json:
  *           schema:
  *             type: object
- *             required: [accountId, groups]
+ *             required: [groups]
  *             properties:
- *               accountId: { type: string, example: VR_EMP_001 }
  *               groups: { type: string, example: WS-ENT200 }
  *     responses:
  *       200: { description: Updated account }
@@ -212,13 +211,6 @@ router.post(
   validate(assignGroup),
   asyncHandler(async (req, res) => {
     const actor = req.user ? req.user.username : 'system';
-    if (req.body.accountId && req.body.accountId !== req.params.id) {
-      return res.status(400).json({
-        success: false,
-        message: 'accountId in request body must match path id'
-      });
-    }
-
     const source = String(req.body.groups || req.body.groupId || '');
     const groupIds = source
       .split(',')
