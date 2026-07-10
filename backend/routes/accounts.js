@@ -188,7 +188,7 @@ router.get(
  * /api/accounts/{id}/groups:
  *   post:
  *     tags: [Accounts]
- *     summary: Assign a group (entitlement) to an account
+ *     summary: Assign one or more groups (entitlements) to an account
  *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - { in: path, name: id, required: true, schema: { type: string } }
@@ -198,19 +198,34 @@ router.get(
  *         application/json:
  *           schema:
  *             type: object
- *             required: [groupId]
- *             properties: { groupId: { type: string, example: WS-ENT200 } }
+ *             required: [accountId, groups]
+ *             properties:
+ *               accountId: { type: string, example: VR_EMP_001 }
+ *               groups: { type: string, example: WS-ENT200 }
  *     responses:
  *       200: { description: Updated account }
  *       400: { description: Group does not exist }
- *       409: { description: Group already assigned }
+ *       409: { description: Group(s) already assigned }
  */
 router.post(
   '/:id/groups',
   validate(assignGroup),
   asyncHandler(async (req, res) => {
     const actor = req.user ? req.user.username : 'system';
-    const account = await accountService.assignGroup(req.params.id, req.body.groupId, actor);
+    if (req.body.accountId && req.body.accountId !== req.params.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'accountId in request body must match path id'
+      });
+    }
+
+    const source = String(req.body.groups || req.body.groupId || '');
+    const groupIds = source
+      .split(',')
+      .map((g) => g.trim())
+      .filter(Boolean);
+
+    const account = await accountService.assignGroups(req.params.id, groupIds, actor);
     res.json({ success: true, data: account });
   })
 );

@@ -38,7 +38,10 @@ export async function getAccountGroups(id) {
 }
 
 export async function assignGroup(id, groupId) {
-  const { data } = await api.post(`/api/accounts/${id}/groups`, { groupId });
+  const { data } = await api.post(`/api/accounts/${id}/groups`, {
+    accountId: id,
+    groups: groupId
+  });
   return data.data;
 }
 

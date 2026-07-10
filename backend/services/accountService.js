@@ -260,6 +260,33 @@ class AccountService {
     return updated;
   }
 
+  /** Assign one or more groups to an account. */
+  async assignGroups(id, groupIds = [], actor = 'system') {
+    const account = await this.getAccountById(id);
+    const wanted = Array.from(new Set((groupIds || []).filter(Boolean)));
+    if (wanted.length === 0) {
+      throw ApiError.badRequest('At least one group id is required');
+    }
+
+    await this._assertGroupsExist(wanted);
+
+    const current = account.groups || [];
+    const next = Array.from(new Set([...current, ...wanted]));
+    const added = wanted.filter((g) => !current.includes(g));
+
+    if (added.length === 0) {
+      throw ApiError.conflict(`Account "${id}" already has all requested group assignments`);
+    }
+
+    const updated = await accountRepository.update(id, { groups: next });
+    logger.audit('GROUP_ASSIGN', `Groups [${added.join(', ')}] assigned to ${account.username}`, {
+      actor,
+      targetId: id,
+      groupIds: added
+    });
+    return updated;
+  }
+
   /** Remove a group (entitlement) from an account. */
   async removeGroup(id, groupId, actor = 'system') {
     const account = await this.getAccountById(id);
